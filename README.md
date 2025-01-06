@@ -1,8 +1,11 @@
 #Dynamic Route Optimization and Emission Reduction System
+
 Introduction
+
 This project is developed to address a critical challenge in logistics and transportation—optimizing vehicle routes to ensure timely deliveries while minimizing environmental impact. The system leverages real-time traffic, weather, and vehicle data to recommend the most efficient routes and estimate vehicle emissions for each route to help reduce the company's carbon footprint.
 
 Objectives
+
 Develop a Python-based dynamic routing system using real-time data from various applicable APIs.
 
 Optimize vehicle routes considering traffic, weather, and vehicle-specific details.
