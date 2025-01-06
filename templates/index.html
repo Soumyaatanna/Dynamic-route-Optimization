@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Route Optimization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin: 0;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        form {
+            background-color: white;
+            padding: 2rem;
+            margin: 1rem auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            border-radius: 8px;
+        }
+        label {
+            display: block;
+            margin: 0.5rem 0;
+            font-weight: bold;
+        }
+        input, select {
+            width: calc(100% - 22px);
+            padding: 0.5rem;
+            margin: 0.5rem 0 1rem 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 4px;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #results {
+            display: none;
+            padding: 2rem;
+            margin: 1rem auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            border-radius: 8px;
+        }
+        p {
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Dynamic Route Optimization</h1>
+    
+    <form id="routeForm">
+        <h2>Enter Vehicle Details</h2>
+        <label for="fuelType">Fuel Type:</label>
+        <select id="fuelType" required>
+            <option value="gasoline">Gasoline</option>
+            <option value="diesel">Diesel</option>
+            <option value="electric">Electric</option>
+        </select>
+
+        <label for="fuelEfficiency">Fuel Efficiency (mpg or equivalent):</label>
+        <input type="number" id="fuelEfficiency" required>
+
+        <label for="loadCapacity">Load Capacity (lbs):</label>
+        <input type="number" id="loadCapacity" required>
+
+        <h2>Enter Destination</h2>
+        <label for="origin">Origin:</label>
+        <input type="text" id="origin" placeholder="Enter starting location" required>
+
+        <label for="destination">Destination:</label>
+        <input type="text" id="destination" placeholder="Enter destination" required>
+
+        <input type="submit" value="Optimize Route">
+    </form>
+
+    <div id="results">
+        <h2>Route Optimization Results</h2>
+        <p id="routeDetails"></p>
+        <p id="trafficData"></p>
+        <p id="weatherData"></p>
+        <p id="emissionsData"></p>
+    </div>
+
+    <script>
+        document.getElementById('routeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const fuelEfficiency = document.getElementById('fuelEfficiency').value;
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+
+            fetch('/optimize_route', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    vehicle_details: {
+                        fuel_efficiency: fuelEfficiency
+                    },
+                    origin: origin,
+                    destination: destination
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('routeDetails').innerText = `Route Distance: ${data.route.routes[0].legs[0].distance.text}`;
+                document.getElementById('trafficData').innerText = `Traffic Data: ${JSON.stringify(data.traffic)}`;
+                document.getElementById('weatherData').innerText = `Weather Data: ${JSON.stringify(data.weather)}`;
+                document.getElementById('emissionsData').innerText = `Estimated Emissions: ${data.emissions.toFixed(2)} lbs CO2`;
+                
+                document.getElementById('results').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while fetching the route optimization data. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>
